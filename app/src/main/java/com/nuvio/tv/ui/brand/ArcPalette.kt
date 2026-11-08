@@ -111,6 +111,7 @@ class ArcPalette private constructor(val key: String, private val stops: IntArra
                 AppTheme.ROSE -> Rose
                 AppTheme.WHITE -> White
                 AppTheme.GLASS -> Glass
+                AppTheme.INK -> White // fork: ink is warm white
             }
     }
 }

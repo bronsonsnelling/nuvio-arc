@@ -60,7 +60,9 @@ data class NuvioFocusTokens(
 )
 
 object NuvioMotion {
-    val tokens = NuvioMotionTokens(
+    val tokens: NuvioMotionTokens get() = if (InkTheme.active) InkTheme.motion else nuvioTokens // fork
+
+    private val nuvioTokens = NuvioMotionTokens(
         durations = NuvioMotionDurations(
             instant = 0,
             quick = 125,

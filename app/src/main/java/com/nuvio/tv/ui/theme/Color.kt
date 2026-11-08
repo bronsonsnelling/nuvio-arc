@@ -103,7 +103,8 @@ class NuvioColorScheme(
     palette: ThemeColorPalette,
     amoledMode: Boolean = false,
     amoledSurfacesMode: Boolean = false,
-    glassPresentation: Boolean = false
+    glassPresentation: Boolean = false,
+    ink: Boolean = false // fork: InkTheme
 ) {
     private val pureBlack = NuvioPrimitives.black
     private val pureBlackSurfaces = amoledMode && amoledSurfacesMode
@@ -119,41 +120,41 @@ class NuvioColorScheme(
     val Menu = if (pureBlackSurfaces) pureBlack else palette.menu
     val Modal = if (pureBlackSurfaces) pureBlack else palette.modal
     val PlayerOverlay = palette.playerOverlay
-    val Divider = NuvioPrimitives.neutral750
+    val Divider = if (ink) InkTheme.line else NuvioPrimitives.neutral750
 
-    val Primary = NuvioPrimitives.neutral500
+    val Primary = if (ink) InkTheme.ink else NuvioPrimitives.neutral500
     val PrimaryVariant = NuvioPrimitives.neutral650
-    val OnPrimary = NuvioPrimitives.white
+    val OnPrimary = if (ink) InkTheme.black else NuvioPrimitives.white
     val Secondary = palette.secondary
     val SecondaryVariant = palette.secondaryVariant
     val OnSecondary = palette.onSecondary
     val OnSecondaryVariant = palette.onSecondaryVariant
 
-    val TextPrimary = NuvioPrimitives.white
-    val TextSecondary = if (glassPresentation) Color(0xFFDCE2E7) else NuvioPrimitives.neutral400
-    val TextTertiary = if (glassPresentation) Color(0xFFBDC8D1) else NuvioPrimitives.neutral600
-    val TextDisabled = NuvioPrimitives.neutral700
+    val TextPrimary = if (ink) InkTheme.ink else NuvioPrimitives.white
+    val TextSecondary = if (ink) InkTheme.mid else if (glassPresentation) Color(0xFFDCE2E7) else NuvioPrimitives.neutral400
+    val TextTertiary = if (ink) InkTheme.mid else if (glassPresentation) Color(0xFFBDC8D1) else NuvioPrimitives.neutral600
+    val TextDisabled = if (ink) InkTheme.dim else NuvioPrimitives.neutral700
     val TextInverse = NuvioPrimitives.neutral925
 
     val FocusRing = palette.focusRing
     val FocusBackground = palette.focusBackground
-    val FocusContent = NuvioPrimitives.white
+    val FocusContent = if (ink) InkTheme.ink else NuvioPrimitives.white
     val FocusScrim = NuvioPrimitives.black.copy(alpha = 0.32f)
 
-    val Rating = NuvioPrimitives.rating
+    val Rating = if (ink) InkTheme.ink else NuvioPrimitives.rating
     val Error = NuvioPrimitives.error
     val Warning = NuvioPrimitives.warning
     val Success = NuvioPrimitives.success
     val Info = NuvioPrimitives.info
-    val Watched = NuvioPrimitives.success
-    val Unwatched = NuvioPrimitives.neutral600
-    val Cached = NuvioPrimitives.blue300
-    val Torrent = NuvioPrimitives.torrent
-    val Premium = NuvioPrimitives.premium
+    val Watched = if (ink) InkTheme.ink else NuvioPrimitives.success
+    val Unwatched = if (ink) InkTheme.dim else NuvioPrimitives.neutral600
+    val Cached = if (ink) InkTheme.mid else NuvioPrimitives.blue300
+    val Torrent = if (ink) InkTheme.mid else NuvioPrimitives.torrent
+    val Premium = if (ink) InkTheme.ink else NuvioPrimitives.premium
 
-    val Border = NuvioPrimitives.neutral750
+    val Border = if (ink) InkTheme.line else NuvioPrimitives.neutral750
     val BorderFocused = FocusRing
-    val BorderMuted = NuvioPrimitives.neutral750.copy(alpha = 0.58f)
+    val BorderMuted = if (ink) InkTheme.line else NuvioPrimitives.neutral750.copy(alpha = 0.58f)
 
     val Scrim = NuvioPrimitives.black.copy(alpha = 0.62f)
     val ImageScrim = NuvioPrimitives.black.copy(alpha = 0.58f)
@@ -281,19 +282,19 @@ object NuvioColors {
         @ReadOnlyComposable
         get() = NuvioTheme.colors.SurfaceVariant
 
-    val Primary = NuvioPrimitives.neutral500
+    val Primary get() = if (InkTheme.active) InkTheme.ink else NuvioPrimitives.neutral500 // fork
     val PrimaryVariant = NuvioPrimitives.neutral650
-    val OnPrimary = NuvioPrimitives.white
-    val TextPrimary = NuvioPrimitives.white
-    val TextSecondary = NuvioPrimitives.neutral400
-    val TextTertiary = NuvioPrimitives.neutral600
-    val TextDisabled = NuvioPrimitives.neutral700
-    val Rating = NuvioPrimitives.rating
+    val OnPrimary get() = if (InkTheme.active) InkTheme.black else NuvioPrimitives.white // fork
+    val TextPrimary get() = if (InkTheme.active) InkTheme.ink else NuvioPrimitives.white // fork
+    val TextSecondary get() = if (InkTheme.active) InkTheme.mid else NuvioPrimitives.neutral400 // fork
+    val TextTertiary get() = if (InkTheme.active) InkTheme.mid else NuvioPrimitives.neutral600 // fork
+    val TextDisabled get() = if (InkTheme.active) InkTheme.dim else NuvioPrimitives.neutral700 // fork
+    val Rating get() = if (InkTheme.active) InkTheme.ink else NuvioPrimitives.rating // fork
     val Error = NuvioPrimitives.error
     val Success = NuvioPrimitives.success
     val Warning = NuvioPrimitives.warning
     val Info = NuvioPrimitives.info
-    val Border = NuvioPrimitives.neutral750
+    val Border get() = if (InkTheme.active) InkTheme.line else NuvioPrimitives.neutral750 // fork
 
     val Secondary: Color
         @Composable

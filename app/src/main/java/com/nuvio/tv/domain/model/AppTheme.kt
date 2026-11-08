@@ -15,5 +15,6 @@ enum class AppTheme(val displayName: String) {
     COPPER("Copper"),
     ROSE("Rose"),
     WHITE("White"),
-    GLASS("Glass")
+    GLASS("Glass"),
+    INK("Ink") // fork: ink look (ui/theme/InkTheme.kt)
 }

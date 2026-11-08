@@ -778,4 +778,5 @@ internal fun AppTheme.localizedName(): String = when (this) {
     AppTheme.ROSE -> stringResource(R.string.theme_color_rose)
     AppTheme.WHITE -> stringResource(R.string.theme_color_white)
     AppTheme.GLASS -> stringResource(R.string.theme_color_glass)
+    AppTheme.INK -> "Ink" // fork
 }

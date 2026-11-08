@@ -105,13 +105,16 @@ fun NuvioTheme(
     val arcPalette = remember(appTheme, customThemeColors) { ArcPalette.forTheme(appTheme, customThemeColors) }
     // This identity-valued static local otherwise invalidates the whole destination
     // when unrelated Activity state (for example playback ownership) changes.
-    val colorScheme = remember(palette, amoledMode, amoledSurfacesMode, appearance != null) { NuvioColorScheme(
+    val ink = appTheme == AppTheme.INK // fork: InkTheme
+    InkTheme.active = ink
+    val colorScheme = remember(palette, amoledMode, amoledSurfacesMode, appearance != null, ink) { NuvioColorScheme(
         palette = palette,
         amoledMode = appearance == null && amoledMode,
         amoledSurfacesMode = appearance == null && amoledSurfacesMode,
-        glassPresentation = appearance != null
+        glassPresentation = appearance != null,
+        ink = ink
     ) }
-    val typography = remember(appFont) { buildNuvioTypography(getFontFamily(appFont)) }
+    val typography = remember(appFont, ink) { if (ink) InkTheme.typography() else buildNuvioTypography(getFontFamily(appFont)) }
     val textStyles = remember(typography) { buildNuvioTextStyles(typography) }
 
     val materialColorScheme = darkColorScheme(

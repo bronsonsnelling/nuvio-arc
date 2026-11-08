@@ -128,6 +128,7 @@ object ThemeColors {
             AppTheme.ROSE -> Rose
             AppTheme.WHITE -> White
             AppTheme.GLASS -> Glass
+            AppTheme.INK -> InkTheme.palette // fork
         }
     }
 }
