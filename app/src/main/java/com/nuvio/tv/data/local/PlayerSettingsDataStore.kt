@@ -377,7 +377,7 @@ data class PlayerSettings(
     val mpvHi10pGnextSoftwareFallbackEnabled: Boolean = false,
     val mpvHardwareDecodeMode: MpvHardwareDecodeMode = MpvHardwareDecodeMode.AUTO_SAFE,
     // Display settings
-    val frameRateMatchingMode: FrameRateMatchingMode = FrameRateMatchingMode.OFF,
+    val frameRateMatchingMode: FrameRateMatchingMode = FrameRateMatchingMode.START_STOP, // fork default
     val resolutionMatchingEnabled: Boolean = false,
     // Stream selection settings
     val streamAutoPlayMode: StreamAutoPlayMode = StreamAutoPlayMode.MANUAL,
@@ -385,7 +385,7 @@ data class PlayerSettings(
     val streamAutoPlaySelectedAddons: Set<String> = emptySet(),
     val streamAutoPlaySelectedPlugins: Set<String> = emptySet(),
     val streamAutoPlayRegex: String = "",
-    val streamListSort: StreamListSort = StreamListSort.SOURCE_ORDER,
+    val streamListSort: StreamListSort = StreamListSort.BEST_QUALITY_FIRST, // fork default
     // Fork: default OFF until validated against the passthrough audio lifecycle.
     val postPlayRecommendationsEnabled: Boolean = false,
     val postPlayMovieThresholdPercent: Int = DEFAULT_POST_PLAY_MOVIE_THRESHOLD_PERCENT,
@@ -1376,7 +1376,7 @@ class PlayerSettingsDataStore @Inject constructor(
                 mpvHardwareDecodeMode = parseMpvHardwareDecodeMode(prefs[mpvHardwareDecodeModeKey]),
                 frameRateMatchingMode = prefs[frameRateMatchingModeKey]?.let {
                     runCatching { FrameRateMatchingMode.valueOf(it) }.getOrNull()
-                } ?: if (prefs[frameRateMatchingKey] == true) FrameRateMatchingMode.START_STOP else FrameRateMatchingMode.OFF,
+                } ?: if (prefs[frameRateMatchingKey] == false) FrameRateMatchingMode.OFF else FrameRateMatchingMode.START_STOP, // fork default
                 resolutionMatchingEnabled = prefs[resolutionMatchingEnabledKey] ?: false,
                 streamAutoPlayMode = prefs[streamAutoPlayModeKey]?.let {
                     runCatching { StreamAutoPlayMode.valueOf(it) }.getOrDefault(StreamAutoPlayMode.MANUAL)
@@ -1389,7 +1389,7 @@ class PlayerSettingsDataStore @Inject constructor(
                 streamAutoPlayRegex = prefs[streamAutoPlayRegexKey] ?: "",
                 streamListSort = prefs[streamListSortKey]?.let {
                     runCatching { StreamListSort.valueOf(it) }.getOrNull()
-                } ?: StreamListSort.SOURCE_ORDER,
+                } ?: StreamListSort.BEST_QUALITY_FIRST, // fork default
                 postPlayRecommendationsEnabled = prefs[postPlayRecommendationsEnabledKey] ?: false,
                 postPlayMovieThresholdPercent = (prefs[postPlayMovieThresholdPercentKey]
                     ?: PlayerSettings.DEFAULT_POST_PLAY_MOVIE_THRESHOLD_PERCENT).coerceIn(
