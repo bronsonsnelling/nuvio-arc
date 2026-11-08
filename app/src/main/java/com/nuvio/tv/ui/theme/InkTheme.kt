@@ -57,7 +57,9 @@ object InkTheme {
         listOf(FontWeight.Normal, FontWeight.Medium, FontWeight.SemiBold, FontWeight.Bold, FontWeight.Black)
             .map { Font(res, it) }
     )
-    val Archivo = only(R.font.archivo_black)
+    // Archivo Black is always UPPERCASE in ink: this copy draws lowercase as capitals
+    // (fork/make_caps_font.py), so headings need no per-screen uppercase().
+    val Archivo = only(R.font.archivo_black_caps)
     val Pixel = only(R.font.silkscreen)
 
     private val tight = LineHeightStyle(LineHeightStyle.Alignment.Center, LineHeightStyle.Trim.None)
