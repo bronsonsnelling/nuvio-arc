@@ -358,7 +358,7 @@ data class PlayerSettings(
     val skipIntroEnabled: Boolean = true,
     val chaptersEnabled: Boolean = true,
     val seekingMode: SeekingMode = SeekingMode.BALANCED,
-    val parentalGuideEnabled: Boolean = true,
+    val parentalGuideEnabled: Boolean = false, // fork default
     val autoSkipSegmentTypes: Set<AutoSkipSegmentType> = emptySet(),
     // Dolby Vision settings (libdovi conversion). dv7HandlingMode == HDR10_BASE_LAYER
     // replaces the legacy mapDV7ToHevc boolean (strip DV7, play HEVC base layer).
@@ -1356,7 +1356,7 @@ class PlayerSettingsDataStore @Inject constructor(
                 chaptersEnabled = prefs[chaptersEnabledKey] ?: true,
                 seekingMode = prefs[seekingModeKey]?.let { v -> SeekingMode.entries.firstOrNull { it.name == v } }
                     ?: SeekingMode.BALANCED,
-                parentalGuideEnabled = prefs[parentalGuideEnabledKey] ?: true,
+                parentalGuideEnabled = prefs[parentalGuideEnabledKey] ?: false, // fork default
                 autoSkipSegmentTypes = prefs[autoSkipSegmentTypesKey]
                     ?.mapNotNull(AutoSkipSegmentType::fromStoredValue)
                     ?.toSet()
