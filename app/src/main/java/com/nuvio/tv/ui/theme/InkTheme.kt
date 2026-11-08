@@ -133,4 +133,10 @@ object InkTheme {
     /** Set by NuvioTheme; NuvioMotion is a global object, so it reads this to pick ink's motion. */
     @Volatile
     var active: Boolean = false
+
+    /**
+     * The playing title's accent (from its backdrop), for the player's progress line: ink keeps the
+     * picture's colour only there. Set by the player chrome, read by Arc's ProgressBar.
+     */
+    val progressAccent = androidx.compose.runtime.mutableStateOf(ink)
 }

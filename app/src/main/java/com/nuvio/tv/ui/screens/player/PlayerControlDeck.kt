@@ -151,7 +151,7 @@ internal fun PlayerControlChrome(v2: Boolean, modifier: Modifier = Modifier, rig
             .then(if (panel) Modifier.nuvioGlass(GlassRole.CONTROL, shape = RoundedCornerShape(12.dp)) else Modifier)
             .then(if (v2) Modifier.padding(horizontal = 12.dp, vertical = if (panel) 14.dp else 8.dp) else Modifier),
             verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(2.dp)) { timeline(); time() }
+            Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(2.dp)) { if (com.nuvio.tv.ui.theme.InkTheme.active) { time(); timeline() } else { timeline(); time() } } // fork: ink's times over the line
             Spacer(Modifier.height(gap)); deck()
         }
     }
@@ -159,6 +159,7 @@ internal fun PlayerControlChrome(v2: Boolean, modifier: Modifier = Modifier, rig
 
 @Composable
 private fun PlayerStyledControlButton(action: PlayerControlAction, style: PlayerControlButtonStyle, playing: Boolean, label: String, onClick: () -> Unit, modifier: Modifier) {
+    if (com.nuvio.tv.ui.theme.InkTheme.active) { InkControlWord(InkPlayer.word(action, playing), onClick, modifier); return } // fork
     val v2 = LocalV2Appearance.current != null
     val transport = action in setOf(PlayerControlAction.PLAY_PAUSE, PlayerControlAction.RESTART, PlayerControlAction.NEXT_EPISODE) || (!v2 && (action == PlayerControlAction.EPISODES || action == PlayerControlAction.CHAPTERS))
     val icon = playerControlIcon(action, playing)

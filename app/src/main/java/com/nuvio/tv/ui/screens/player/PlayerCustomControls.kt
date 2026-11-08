@@ -151,6 +151,7 @@ internal fun PlayerCustomControls(
     actions: V2PlayerActions,
     reportCodeVisible: Boolean
 ) {
+    val available = available - PlayerControlAction.WATCH_PARTY // fork: no watch party button
     val v2 = LocalV2Appearance.current != null
     val appearance = LocalV2Appearance.current
     val chromePolicy = playerControlChromePolicy(v2, appearance?.playerChromeStyle == PlayerChromeStyle.CONTROL_DECK, appearance?.visualStyle == VisualStyle.CINEMATIC_GLASS)
@@ -202,21 +203,23 @@ internal fun PlayerCustomControls(
     }
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
     Box(Modifier.fillMaxSize()) {
+        if (com.nuvio.tv.ui.theme.InkTheme.active) InkPlayerAccent(state.backdrop) // fork
         Box(Modifier.align(Alignment.BottomCenter).fillMaxWidth().height(260.dp)
-            .background(Brush.verticalGradient(listOf(Color.Transparent, Color.Black.copy(alpha = chromePolicy.backgroundAlpha)))))
+            .background(if (com.nuvio.tv.ui.theme.InkTheme.active) InkPlayer.band else Brush.verticalGradient(listOf(Color.Transparent, Color.Black.copy(alpha = chromePolicy.backgroundAlpha))))) // fork
         PlayerControlChrome(v2, Modifier.align(Alignment.BottomCenter).verticalScroll(rememberScrollState()),
             gap = gap,
             title = {
             if (state.activeSkipInterval == null) Column(Modifier.hideUnderSeekThumbnails(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 val title = state.contentName ?: state.title
                 var failed by remember(state.logo) { mutableStateOf(false) }
-                if (!state.logo.isNullOrBlank() && !failed) AsyncImage(state.logo, title,
+                if (!com.nuvio.tv.ui.theme.InkTheme.active && !state.logo.isNullOrBlank() && !failed) AsyncImage(state.logo, title, // fork: ink shows the title
                     Modifier.sizeIn(maxWidth = 300.dp, maxHeight = 64.dp), contentScale = ContentScale.Fit,
                     alignment = Alignment.CenterStart, onError = { failed = true })
+                else if (com.nuvio.tv.ui.theme.InkTheme.active) InkPlayerTitle(title) // fork
                 else Text(title, color = Color.White, maxLines = 1, overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.titleLarge)
                 PlayerSecondaryMetadata(state, chapter = rememberCurrentChapter(viewModel, state.chapters))
-                if (playerBadges.isNotEmpty()) PlayerBadges(playerBadges)
+                if (playerBadges.isNotEmpty()) { if (com.nuvio.tv.ui.theme.InkTheme.active) InkPlayerBadges(playerBadges) else PlayerBadges(playerBadges) } // fork
             }
             }, timeline = {
             if (hasSeekTimeline) Box(Modifier.fillMaxWidth().onGloballyPositioned { coordinates ->
@@ -230,7 +233,7 @@ internal fun PlayerCustomControls(
                     onUpKey = actions.hide, onFocused = actions.interaction, onClick = actions.playPause)
             }
             }, time = {
-            if (hasSeekTimeline) PlayerControlsTimeTextHost(viewModel)
+            if (hasSeekTimeline) { if (com.nuvio.tv.ui.theme.InkTheme.active) InkPlayerTimes(viewModel) else PlayerControlsTimeTextHost(viewModel) } // fork
             }, deck = {
             Row(Modifier.fillMaxWidth().onGloballyPositioned {
                     rowHeight = it.size.height

@@ -51,7 +51,8 @@ internal fun PlayerSecondaryMetadata(
             withStyle(SpanStyle(color = accent)) { append(chapterText) }
         }
     }
-    Text(text, color = Color.White.copy(alpha = .9f), style = MaterialTheme.typography.bodyMedium,
+    Text(text, color = if (com.nuvio.tv.ui.theme.InkTheme.active) com.nuvio.tv.ui.theme.InkTheme.mid else Color.White.copy(alpha = .9f), // fork: ink's Silkscreen
+        style = if (com.nuvio.tv.ui.theme.InkTheme.active) MaterialTheme.typography.labelLarge else MaterialTheme.typography.bodyMedium,
         maxLines = 1, modifier = modifier.fillMaxWidth()
             .basicMarquee(iterations = Int.MAX_VALUE, initialDelayMillis = 1200, velocity = 45.dp))
 }

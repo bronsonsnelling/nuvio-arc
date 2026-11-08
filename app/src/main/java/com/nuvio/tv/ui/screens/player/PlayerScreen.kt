@@ -4123,7 +4123,7 @@ private fun ProgressBar(
 ) {
     val v2ProgressBrush = if (com.nuvio.tv.ui.v2.appearance.LocalV2Appearance.current != null) {
         com.nuvio.tv.ui.theme.createThemeBrush(com.nuvio.tv.ui.v2.appearance.v2AccentColors())
-    } else androidx.compose.ui.graphics.SolidColor(Color.White)
+    } else androidx.compose.ui.graphics.SolidColor(if (com.nuvio.tv.ui.theme.InkTheme.active) com.nuvio.tv.ui.theme.InkTheme.progressAccent.value else Color.White) // fork
     val geometry = PlaybackTimelineGeometry.from(playbackPosition, currentPosition, bufferedPosition, duration)
     val progress = geometry.played
     val bufferedProgress = geometry.buffered
@@ -4252,7 +4252,7 @@ private fun ProgressBar(
     ) {
         val trackWidth = maxWidth
         val trackHeight by animateDpAsState(
-            targetValue = if (isFocused) 8.dp else 4.dp,
+            targetValue = if (com.nuvio.tv.ui.theme.InkTheme.active) (if (isFocused) 3.dp else 1.dp) else if (isFocused) 8.dp else 4.dp, // fork: ink's line
             animationSpec = tween(160),
             label = "trackHeight"
         )
@@ -4262,7 +4262,7 @@ private fun ProgressBar(
                 .fillMaxWidth()
                 .height(trackHeight)
                 .clip(RoundedCornerShape(50))
-                .background(Color.White.copy(alpha = if (isFocused) 0.24f else 0.18f))
+                .background(if (com.nuvio.tv.ui.theme.InkTheme.active) com.nuvio.tv.ui.theme.InkTheme.line else Color.White.copy(alpha = if (isFocused) 0.24f else 0.18f)) // fork
                 // Neutral buffer tint remains distinct from both the dim track and themed played fill.
                 .playerProgressFill(
                     progress = { animatedProgress },
