@@ -469,6 +469,7 @@ internal fun PlayButton(
     onFocusRestored: () -> Unit = {}
 ) {
     val isV2 = com.nuvio.tv.ui.v2.appearance.LocalV2Appearance.current != null
+    val ink = com.nuvio.tv.ui.theme.InkTheme.active // fork: ink look
     val v2Cinematic = com.nuvio.tv.ui.v2.appearance.LocalV2Appearance.current?.visualStyle ==
         com.nuvio.tv.domain.model.VisualStyle.CINEMATIC_GLASS
     var longPressTriggered by remember { mutableStateOf(false) }
@@ -492,7 +493,7 @@ internal fun PlayButton(
             }
         },
         modifier = modifier
-            .nuvioControlSurface(RoundedCornerShape(if (isV2) 8.dp else NuvioTheme.spacing.xxl))
+            .nuvioControlSurface(RoundedCornerShape(if (ink) 0.dp else if (isV2) 8.dp else NuvioTheme.spacing.xxl))
             .then(if (focusRequester != null) Modifier.focusRequester(focusRequester) else Modifier)
             .onFocusChanged {
                 if (it.hasFocus) com.nuvio.tv.core.performance.DetailEntryTrace.mark("controls_focus", once = true)
@@ -540,24 +541,24 @@ internal fun PlayButton(
                     Modifier
                 }
             ),
-        scale = if (isV2) ButtonDefaults.scale(focusedScale = 1f) else ButtonDefaults.scale(),
+        scale = if (isV2 || ink) ButtonDefaults.scale(focusedScale = 1f) else ButtonDefaults.scale(),
         colors = ButtonDefaults.colors(
-            containerColor = if (isV2) Color.Transparent else NuvioTheme.colors.Secondary,
-            focusedContainerColor = if (isV2) {
+            containerColor = if (isV2 || ink) Color.Transparent else NuvioTheme.colors.Secondary,
+            focusedContainerColor = if (ink) Color.Transparent else if (isV2) {
                 NuvioTheme.colors.Secondary.copy(alpha = if (v2Cinematic) .16f else .24f)
             } else {
                 NuvioTheme.colors.Secondary
             },
-            contentColor = if (isV2) NuvioTheme.colors.TextPrimary else NuvioTheme.colors.OnSecondary,
-            focusedContentColor = if (isV2) NuvioTheme.colors.TextPrimary else NuvioTheme.colors.OnSecondary
+            contentColor = if (ink) com.nuvio.tv.ui.theme.InkTheme.dim else if (isV2) NuvioTheme.colors.TextPrimary else NuvioTheme.colors.OnSecondary,
+            focusedContentColor = if (ink) com.nuvio.tv.ui.theme.InkTheme.ink else if (isV2) NuvioTheme.colors.TextPrimary else NuvioTheme.colors.OnSecondary
         ),
         shape = ButtonDefaults.shape(
-            shape = RoundedCornerShape(if (isV2) 8.dp else NuvioTheme.spacing.xxl)
+            shape = RoundedCornerShape(if (ink) 0.dp else if (isV2) 8.dp else NuvioTheme.spacing.xxl)
         ),
-        border = if (isV2) ButtonDefaults.border() else ButtonDefaults.border(
+        border = if (isV2 || ink) ButtonDefaults.border() else ButtonDefaults.border(
             focusedBorder = Border(
                 border = NuvioTheme.focusRing.border(NuvioTheme.spacing.xxs),
-                shape = RoundedCornerShape(if (isV2) 8.dp else NuvioTheme.spacing.xxl)
+                shape = RoundedCornerShape(if (ink) 0.dp else if (isV2) 8.dp else NuvioTheme.spacing.xxl)
             )
         ),
         contentPadding = PaddingValues(horizontal = NuvioTheme.spacing.xl, vertical = 14.dp)
@@ -572,19 +573,19 @@ internal fun PlayButton(
                 )
             )
         ) {
-            Icon(
+            if (!ink) Icon(
                 painter = playPainter,
                 contentDescription = null,
                 modifier = Modifier.size(18.dp)
             )
             AnimatedVisibility(
-                visible = text != null || isV2,
+                visible = text != null || isV2 || ink,
                 enter = fadeIn(animationSpec = tween(NuvioMotion.tokens.durations.fast)),
                 exit = fadeOut(animationSpec = tween(NuvioMotion.tokens.durations.quick))
             ) {
                 Text(
                     text = text ?: stringResource(R.string.player_pill_play),
-                    style = MaterialTheme.typography.labelLarge
+                    style = if (ink) MaterialTheme.typography.titleLarge else MaterialTheme.typography.labelLarge
                 )
             }
         }
@@ -601,6 +602,7 @@ private fun ActionIconButtonPainter(
     enabled: Boolean = true
 ) {
     val isV2 = com.nuvio.tv.ui.v2.appearance.LocalV2Appearance.current != null
+    val ink = com.nuvio.tv.ui.theme.InkTheme.active // fork: ink look
     if (isV2) {
         V2DetailGlassAction(contentDescription, onClick, onFocused, enabled, null) {
             Icon(painter, null, Modifier.size(17.dp))
@@ -617,21 +619,21 @@ private fun ActionIconButtonPainter(
                 if (state.isFocused) onFocused()
             }
             .focusProperties { up = FocusRequester.Cancel },
-        scale = if (isV2) IconButtonDefaults.scale(focusedScale = 1f) else IconButtonDefaults.scale(),
+        scale = if (isV2 || ink) IconButtonDefaults.scale(focusedScale = 1f) else IconButtonDefaults.scale(),
         colors = IconButtonDefaults.colors(
-            containerColor = if (isV2) Color.Transparent else NuvioTheme.colors.BackgroundCard,
-            focusedContainerColor = if (isV2) Color.Transparent else NuvioTheme.colors.Secondary,
-            contentColor = NuvioTheme.colors.TextPrimary,
-            focusedContentColor = if (isV2) NuvioTheme.colors.TextPrimary else NuvioTheme.colors.OnSecondary
+            containerColor = if (isV2 || ink) Color.Transparent else NuvioTheme.colors.BackgroundCard,
+            focusedContainerColor = if (isV2 || ink) Color.Transparent else NuvioTheme.colors.Secondary,
+            contentColor = if (ink) com.nuvio.tv.ui.theme.InkTheme.dim else NuvioTheme.colors.TextPrimary,
+            focusedContentColor = if (ink) com.nuvio.tv.ui.theme.InkTheme.ink else if (isV2) NuvioTheme.colors.TextPrimary else NuvioTheme.colors.OnSecondary
         ),
-        border = if (isV2) IconButtonDefaults.border() else IconButtonDefaults.border(
+        border = if (isV2 || ink) IconButtonDefaults.border() else IconButtonDefaults.border(
             focusedBorder = Border(
                 border = NuvioTheme.focusRing.border(NuvioTheme.spacing.xxs),
                 shape = CircleShape
             )
         ),
         shape = IconButtonDefaults.shape(
-            shape = CircleShape
+            shape = if (ink) androidx.compose.ui.graphics.RectangleShape else CircleShape // fork
         )
     ) {
         Icon(
@@ -662,6 +664,7 @@ private fun ActionIconButton(
     focusRequester: FocusRequester? = null
 ) {
     val isV2 = com.nuvio.tv.ui.v2.appearance.LocalV2Appearance.current != null
+    val ink = com.nuvio.tv.ui.theme.InkTheme.active // fork: ink look
     if (isV2) {
         V2DetailGlassAction(contentDescription, onClick, onFocused, enabled, onLongPress) {
             when {
@@ -730,21 +733,21 @@ private fun ActionIconButton(
                     toggleableState = if (selected) ToggleableState.On else ToggleableState.Off
                 }
             },
-        scale = if (isV2) IconButtonDefaults.scale(focusedScale = 1f) else IconButtonDefaults.scale(),
+        scale = if (isV2 || ink) IconButtonDefaults.scale(focusedScale = 1f) else IconButtonDefaults.scale(),
         colors = IconButtonDefaults.colors(
-            containerColor = if (selected) selectedContainerColor else if (isV2) Color.Transparent else NuvioTheme.colors.BackgroundCard,
-            focusedContainerColor = if (isV2) Color.Transparent else NuvioTheme.colors.Secondary,
-            contentColor = if (selected) selectedContentColor else NuvioTheme.colors.TextPrimary,
-            focusedContentColor = if (isV2) NuvioTheme.colors.TextPrimary else NuvioTheme.colors.OnSecondary
+            containerColor = if (ink) Color.Transparent else if (selected) selectedContainerColor else if (isV2) Color.Transparent else NuvioTheme.colors.BackgroundCard,
+            focusedContainerColor = if (isV2 || ink) Color.Transparent else NuvioTheme.colors.Secondary,
+            contentColor = if (ink) (if (selected) com.nuvio.tv.ui.theme.InkTheme.ink else com.nuvio.tv.ui.theme.InkTheme.dim) else if (selected) selectedContentColor else NuvioTheme.colors.TextPrimary,
+            focusedContentColor = if (ink) com.nuvio.tv.ui.theme.InkTheme.ink else if (isV2) NuvioTheme.colors.TextPrimary else NuvioTheme.colors.OnSecondary
         ),
-        border = if (isV2) IconButtonDefaults.border() else IconButtonDefaults.border(
+        border = if (isV2 || ink) IconButtonDefaults.border() else IconButtonDefaults.border(
             focusedBorder = Border(
                 border = NuvioTheme.focusRing.border(NuvioTheme.spacing.xxs),
                 shape = CircleShape
             )
         ),
         shape = IconButtonDefaults.shape(
-            shape = CircleShape
+            shape = if (ink) androidx.compose.ui.graphics.RectangleShape else CircleShape // fork
         )
     ) {
         when {

@@ -4426,7 +4426,7 @@ private fun PlayerClockOverlay(
     ) {
         Text(
             text = timeFormatter.format(Date(nowMs)),
-            style = MaterialTheme.typography.bodyMedium.copy(
+            style = if (com.nuvio.tv.ui.theme.InkTheme.active) MaterialTheme.typography.headlineSmall.copy(fontSize = PLAYER_CLOCK_FONT_SIZE) else MaterialTheme.typography.bodyMedium.copy( // fork
                 fontSize = PLAYER_CLOCK_FONT_SIZE,
                 fontWeight = FontWeight.SemiBold,
                 shadow = clockShadow
@@ -4435,7 +4435,7 @@ private fun PlayerClockOverlay(
         )
         Text(
             text = stringResource(R.string.player_ends_at, endTimeText),
-            style = MaterialTheme.typography.bodyMedium.copy(
+            style = if (com.nuvio.tv.ui.theme.InkTheme.active) MaterialTheme.typography.labelLarge else MaterialTheme.typography.bodyMedium.copy( // fork
                 fontSize = PLAYER_ENDS_AT_FONT_SIZE,
                 fontWeight = FontWeight.Medium,
                 shadow = clockShadow
